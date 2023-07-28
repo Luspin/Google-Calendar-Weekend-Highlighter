@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Weekend Column Highlighter for Google Calendar
 // @namespace   Violentmonkey Scripts
-// @match       https://calendar.google.com/calendar/u/0/r/week/*
+// @match       https://calendar.google.com/calendar/u/0/r/week*
 // @grant       none
 // @version     0.1
 // @author      Luís Pinto
@@ -9,6 +9,17 @@
 // ==/UserScript==
 
 const pageLoadCheckInterval = 1; // in seconds
+let lastUrl = location.href;
+
+new MutationObserver(() => {
+    const url = location.href;
+
+    if (url !== lastUrl) {
+        lastUrl = url;
+        console.log('URL changed');
+        colorizeWeekendColumns("CSwPJc");
+    }
+}).observe(document, { subtree: true, childList: true });
 
 // a simple sleep() function, that takes any number of millisseconds
 function sleep(ms) {
@@ -23,7 +34,7 @@ async function waitForPageLoad() {
         await sleep(pageLoadCheckInterval * 1000);
 
         // have we found the "pageLoadSignal" element?
-        const pageLoadSignal = document.getElementsByClassName("GrxScd EIlDfe");
+        const pageLoadSignal = document.getElementsByClassName("VfPpkd-Jh9lGc");
 
         if (pageLoadSignal[0]) {
             // console.log('Found the "pageLoadSignal" element.');
@@ -32,16 +43,30 @@ async function waitForPageLoad() {
     }
 }
 
-async function colorizeWeekendColumns() {
+async function colorizeWeekendColumns(className) {
     // wait until we find the "pageLoadSignal" element
     await waitForPageLoad();
 
-    const calendarColumns = document.getElementsByClassName("CSwPJc");
-    const saturdayColumn  = calendarColumns.length - 2;
-    const sundayColumn    = calendarColumns.length - 1;
+    const calendarColumns = document.getElementsByClassName(className);
+    const saturdayColumn = calendarColumns.length - 2;
+    const sundayColumn = calendarColumns.length - 1;
 
     calendarColumns[saturdayColumn].style.backgroundColor = "WhiteSmoke";
     calendarColumns[sundayColumn].style.backgroundColor = "WhiteSmoke";
+
+    const calendarHeaders = document.getElementsByClassName("rpCPrc");
+    const saturdayHeader = calendarHeaders.length - 2;
+    const sundayHeader = calendarHeaders.length - 1;
+
+    calendarHeaders[saturdayHeader].style.backgroundColor = "WhiteSmoke";
+    calendarHeaders[sundayHeader].style.backgroundColor = "WhiteSmoke";
+
+    const calendarSubHeaders = document.getElementsByClassName("eADW5d");
+    const saturdaySubHeader = calendarSubHeaders.length - 2;
+    const sundaySubHeader = calendarSubHeaders.length - 1;
+
+    calendarSubHeaders[saturdaySubHeader].style.backgroundColor = "WhiteSmoke";
+    calendarSubHeaders[sundaySubHeader].style.backgroundColor = "WhiteSmoke";
 }
 
-colorizeWeekendColumns();
+colorizeWeekendColumns("YvjgZe");
